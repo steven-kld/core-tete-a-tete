@@ -62,14 +62,14 @@ def _if_makes_sense(msg, client):
     return result, in_price, out_price
 
 def handle_raw_message(message: MessageRequest, openai_client):
-    # id = _insert_raw_message(
-    #     message.group_link, 
-    #     message.group_name, 
-    #     message.msg, 
-    #     message.tg_user_id, 
-    #     message.tg_user_name
-    # )
-    # message.id = id
+    id = _insert_raw_message(
+        message.group_link, 
+        message.group_name, 
+        message.msg, 
+        message.tg_user_id, 
+        message.tg_user_name
+    )
+    message.id = id
     makes_sense, in_amount, out_amount = _if_makes_sense(message, openai_client)
     save_expense(message.id, "makes_sense", in_amount, out_amount)
     print(makes_sense)

@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field, model_validator
 from typing import Optional, List
 from datetime import datetime
 
+class AccountData(BaseModel):
+    id: int
+    bot_chat_id: int
+    sheet_id: str
+    script_id: str
+    bot_token: str
+
 class MessageRequest(BaseModel):
     # Metadata
     id: Optional[int] = None

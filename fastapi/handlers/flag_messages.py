@@ -1,8 +1,6 @@
-import json, re
 from atoms import respond_with_ai, run_query
 from utils import save_expense
 from models import MessageRequest
-
 
 def _get_matching_prompts(group_name):
     return run_query(
@@ -67,3 +65,5 @@ def handle_flags(message: MessageRequest, openai_client):
 
     if flags:
         _update_flags(message.id, flags)
+    
+    return flags

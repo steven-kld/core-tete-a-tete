@@ -1,6 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-import os, json
 from dotenv import load_dotenv
 from models import MessageRequest
 from config import CHAT_BLACKLIST
