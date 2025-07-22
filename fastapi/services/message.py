@@ -12,4 +12,4 @@ def process_message(message: MessageRequest, openai_client):
     flags = handle_flags(message, openai_client)
 
     for flag in flags:
-        append_job_to_spreadsheet(message, flag)
+        append_job_to_spreadsheet(message)
