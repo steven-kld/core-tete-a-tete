@@ -77,4 +77,4 @@ def handle_flags(message: MessageRequest, openai_client):
     
     message.flags = flags
     # save_expense(message.id, "flag", in_amount, out_amount)
-    return
+    return flags
