@@ -3,17 +3,17 @@ from utils import save_expense
 from models import MessageRequest
 
 def _get_matching_prompts(group_name):
-    return run_query(
+    result = run_query(
         """
-        SELECT a.id AS account_id, a.prompt
+        SELECT p.*
         FROM groups g
-        JOIN accounts_groups ag ON g.id = ag.group_id
-        JOIN accounts a ON ag.account_id = a.id
-        WHERE g.group_name = %s;
-        """, 
-        (group_name,), 
-        fetch_all=True
+        JOIN prompts p ON g.prompt_id = p.id
+        WHERE g.group_name = %s
+        """,
+        (group_name,),
+        fetch_one=True
     )
+    return result if result else False
 
 def _update_flags(message_id, flags):
     run_query(
@@ -28,12 +28,6 @@ def _update_flags(message_id, flags):
 def _if_matches_prompt(msg, prompt_base, openai_client):
     prompt = f"""
 {prompt_base}
-
-Ответь строго:
-True — если сообщение подходит
-False — если нет
-
-Текст сообщения:
 {msg}
 """
     response, in_amount, out_amount = respond_with_ai(prompt, openai_client, max_tokens=2500, model="gpt-4.1-mini")
@@ -47,23 +41,40 @@ False — если нет
 
     return result, in_amount, out_amount
 
+def _flag_message(msg, flags, openai_client):
+    flags_list = '\n'.join([f"{i}. {c}" for i, c in enumerate(flags)])
+    prompt = f"""
+Ты система категоризации. Для приведенного ниже сообщения выбери только одну наиболее подходящую категорию из списка ниже. Категория должна максимально точно отражать смысл запроса на услугу или товар. Пиши только номер категории из списка, ничего больше, без пояснений.
+Выбери 'Не соответствует категории' (номер 0), если сообщение не соотвествует ни одной категории 
+
+Список категорий:
+{flags_list}
+
+Сообщение:
+{msg}
+"""
+
+    response, in_amount, out_amount = respond_with_ai(prompt, openai_client, max_tokens=2500, model="gpt-4.1-mini")
+    return response.strip(), in_amount, out_amount
+
 def handle_flags(message: MessageRequest, openai_client):
-    matching_prompts = _get_matching_prompts(message.group_name)
     flags = []
+    matching_prompt = _get_matching_prompts(message.group_name)
     
-    for prompt in matching_prompts:
-        account_id = prompt.get("account_id", None)
-        if account_id is None:
-            print(f"Skipping prompt with invalid account_id: {prompt}")
-            continue
+    if matching_prompt == False:
+        return flags
+   
+    matches_prompt, in_amount, out_amount = _if_matches_prompt(message.msg, matching_prompt["rate_prompt"], openai_client)
+
+    if matches_prompt == True:
+        flag, in_amount_f, out_amount_f = _flag_message(message.msg, matching_prompt["flags"], openai_client)
+        in_amount += in_amount_f
+        out_amount += out_amount_f
         
-        matches_prompt, in_amount, out_amount = _if_matches_prompt(message.msg, prompt["prompt"], openai_client)
-        save_expense(message.id, "flag", in_amount, out_amount, account_id=account_id)
-
-        if matches_prompt:
-            flags.append(account_id)
-
-    if flags:
-        _update_flags(message.id, flags)
+        if int(flag) != 0 and flag:
+            flags.append(matching_prompt["flags"][int(flag)])
+            # _update_flags(message.id, flags)
     
-    return flags
+    message.flags = flags
+    # save_expense(message.id, "flag", in_amount, out_amount)
+    return

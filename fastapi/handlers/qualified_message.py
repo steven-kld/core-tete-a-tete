@@ -61,7 +61,7 @@ def handle_qualified_message(message: MessageRequest, openai_client):
         message.msg,
         message.app_url,
     )
-
+    
     generic_text, in_amount, out_amount = _generate_title_description(message.msg, openai_client)
     save_expense(message.id, "generic_text", in_amount, out_amount)
     
