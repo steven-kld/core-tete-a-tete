@@ -73,8 +73,8 @@ def handle_flags(message: MessageRequest, openai_client):
         
         if int(flag) != 0 and flag:
             flags.append(matching_prompt["flags"][int(flag)])
-            # _update_flags(message.id, flags)
+            _update_flags(message.id, flags)
     
     message.flags = flags
-    # save_expense(message.id, "flag", in_amount, out_amount)
+    save_expense(message.id, "flag", in_amount, out_amount)
     return flags
