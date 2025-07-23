@@ -16,3 +16,7 @@ async def receive_msg(data: MessageRequest):
         process_message(data, openai_client)
         
     return JSONResponse(content={"status": "success", "message": "Data received successfully"}, status_code=200)
+
+@app.post("/api/bot/start")
+async def receive_msg():       
+    return JSONResponse(content={"status": "success"}, status_code=200)
