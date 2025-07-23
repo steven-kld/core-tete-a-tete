@@ -1,4 +1,4 @@
-from handlers import handle_raw_message, handle_qualified_message, handle_flags, append_job_to_spreadsheet
+from handlers import handle_raw_message, handle_qualified_message, handle_flags, append_job_to_spreadsheet, send_bot_alert
 from models import MessageRequest
 
 def process_message(message: MessageRequest, openai_client):
@@ -12,4 +12,5 @@ def process_message(message: MessageRequest, openai_client):
     flags = handle_flags(message, openai_client)
 
     for flag in flags:
-        append_job_to_spreadsheet(message)
+        send_bot_alert(message)
+        # append_job_to_spreadsheet(message)
