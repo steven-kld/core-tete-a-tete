@@ -37,7 +37,7 @@ def send_bot_alert(message: MessageRequest):
             "chat_id": chat_id,
             "message_raw": re.sub(r"[^\w\s#?!.,:+()%/\-\nа-яА-ЯёЁ]", "", message.msg, flags=re.UNICODE),
             "title": message.generic_title,
-            "username": message.tg_user_name,
+            "username": f"@{message.tg_user_name}",
             "app_url": message.app_url
         }
 
