@@ -1,7 +1,24 @@
-from handlers import update_subscriber_chat_id
+# from handlers import send_bot_alert
+# from models import MessageRequest
+# from datetime import datetime
 
-res = update_subscriber_chat_id("steven_kl", 10001)
-print(res)
+# test_message = MessageRequest(
+#     id=66539,
+#     created_at=datetime.fromisoformat("2025-07-22 08:57:56.517"),
+#     processed=True,
+#     makes_sense=True,
+#     flags=["Туризм, экскурсии, трансфер, водитель"],
+#     group_link="https://t.me/health_ge",
+#     group_name="Медицина 💊 Грузия",
+#     tg_user_id=240046008,
+#     tg_user_name="q_pokrovsky",
+#     msg="Hi this is my msg",
+#     app_url="tg://user?id=240046008",
+#     generic_title="Поиск независимого эксперта по медстрахованию в Грузии",
+#     generic_description="Ищется независимый специалист по медицинскому страхованию в Грузии, который сможет объективно проконсультировать, раскрыть скрытые условия страховок и помочь выбрать оптимальный вариант без влияния страховых компаний."
+# )
+
+# send_bot_alert(test_message)
 
 # import os, json
 # from cryptography.fernet import Fernet
