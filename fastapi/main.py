@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from atoms import init_openai
@@ -18,5 +18,7 @@ async def receive_msg(data: MessageRequest):
     return JSONResponse(content={"status": "success", "message": "Data received successfully"}, status_code=200)
 
 @app.post("/api/bot/start")
-async def receive_msg():       
+async def receive_msg(request: Request):
+    data = await request.json()
+    print("Received body:", data)
     return JSONResponse(content={"status": "success"}, status_code=200)
