@@ -5,6 +5,7 @@ from atoms import init_openai
 from models import MessageRequest
 from config import CHAT_BLACKLIST
 from services import process_message
+from handlers import update_subscriber_chat_id
 load_dotenv()
 
 app = FastAPI()
@@ -21,4 +22,10 @@ async def receive_msg(data: MessageRequest):
 async def receive_msg(request: Request):
     data = await request.json()
     print("Received body:", data)
-    return JSONResponse(content={"status": "success"}, status_code=200)
+    tg_message = data.get("tg", {}).get("message", {})
+    tg_username = tg_message.get("from", {}).get("username")
+    chat_id = str(tg_message.get("chat", {}).get("id"))
+
+    res = update_subscriber_chat_id(tg_username, chat_id)
+
+    return JSONResponse(content={"status": res}, status_code=200)
