@@ -10,6 +10,7 @@ function doPost(e) {
   try {
     const data = e.parameter
     const row = [
+      new Date().toDateString(),
       data.id,
       data.message,
       data.title,
@@ -23,7 +24,7 @@ function doPost(e) {
     sheet.insertRows(2)
     sheet.getRange(2, 1, 1, row.length).setValues([row])
 
-    sendTelegramMessage(`ID ${data.id}:\n${data.description}`, data.chat_id, data.token)
+    sendTelegramMessage(`GROUP: ${data.group_name}\nID ${data.id}:\n${data.description}`, data.chat_id, data.token)
 
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
